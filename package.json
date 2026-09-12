@@ -1,0 +1,121 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "简洁的 Markdown Todo 桌面应用 - Markdown 是真相之源，软件是友好外壳",
+  "main": "main.js",
+  "scripts": {
+    "start": "node scripts/launch.js",
+    "start:raw": "electron .",
+    "check": "node scripts/check-imports.mjs && node scripts/check-delete-category.mjs && node scripts/check-category-guards.mjs && node scripts/check-category-name-chars.mjs && node scripts/check-trash.mjs && node scripts/check-trash-fuzz.mjs && node scripts/check-markers.mjs && node scripts/check-settings.mjs && node scripts/check-backup.mjs && node scripts/check-dirty-race.mjs && node scripts/check-status-meta.mjs && node scripts/check-polling-fallback.mjs && node scripts/check-external-change-path.mjs && node scripts/check-write-race.mjs && node scripts/check-concurrent-edit-race.mjs && node scripts/check-import-tasks.mjs && node scripts/check-batch-ops.mjs && node scripts/check-render-flow.mjs && node scripts/check-completed-order.mjs && node scripts/check-completed-only.mjs && node scripts/check-completed-context-menu.mjs && node scripts/check-trash-context-menu.mjs && node scripts/check-original-category.mjs && node scripts/check-conflict-merge.mjs && node scripts/check-task-dirty-tracking.mjs && node scripts/check-snapshot-creation.mjs && node scripts/check-uncategorized-duplicate.mjs && node scripts/check-uncategorized-position.mjs && node scripts/check-md-ui-sync.mjs && node scripts/check-move-invariance.mjs && node scripts/check-marker-tail.mjs && node scripts/check-picker-timeout.mjs && node scripts/check-conflict-default.mjs && node scripts/check-assert-in-data-dir.mjs && node scripts/check-save-config-rollback.mjs && node scripts/check-commit-active-edit.mjs && node scripts/check-insert-position.mjs && node scripts/check-filter.mjs && node scripts/check-fade-in-stability.mjs && node scripts/check-modal-close-animation.mjs && node scripts/check-ime-guard.mjs && node scripts/check-cjk-autospace.mjs && node scripts/check-click-after-drag.mjs && node scripts/check-second-pass-audit.mjs && node scripts/check-third-pass-audit.mjs && node scripts/smoke-order-and-edge.mjs && node scripts/smoke-ui-parity.mjs",
+    "check:imports": "node scripts/check-imports.mjs",
+    "check:category": "node scripts/check-delete-category.mjs",
+    "check:guards": "node scripts/check-category-guards.mjs",
+    "check:name-chars": "node scripts/check-category-name-chars.mjs",
+    "check:trash": "node scripts/check-trash.mjs",
+    "check:fuzz": "node scripts/check-trash-fuzz.mjs",
+    "check:markers": "node scripts/check-markers.mjs",
+    "check:settings": "node scripts/check-settings.mjs",
+    "check:backup": "node scripts/check-backup.mjs",
+    "check:dirty-race": "node scripts/check-dirty-race.mjs",
+    "check:status-meta": "node scripts/check-status-meta.mjs",
+    "check:polling": "node scripts/check-polling-fallback.mjs",
+    "check:external-path": "node scripts/check-external-change-path.mjs",
+    "check:write-race": "node scripts/check-write-race.mjs",
+    "check:concurrent": "node scripts/check-concurrent-edit-race.mjs",
+    "check:import-tasks": "node scripts/check-import-tasks.mjs",
+    "check:batch": "node scripts/check-batch-ops.mjs",
+    "check:render-flow": "node scripts/check-render-flow.mjs",
+    "check:completed-order": "node scripts/check-completed-order.mjs",
+    "check:completed-only": "node scripts/check-completed-only.mjs",
+    "check:completed-menu": "node scripts/check-completed-context-menu.mjs",
+    "check:trash-menu": "node scripts/check-trash-context-menu.mjs",
+    "check:original-category": "node scripts/check-original-category.mjs",
+    "check:conflict-merge": "node scripts/check-conflict-merge.mjs",
+    "check:dirty-tracking": "node scripts/check-task-dirty-tracking.mjs",
+    "check:snapshot": "node scripts/check-snapshot-creation.mjs",
+    "check:uncat-dup": "node scripts/check-uncategorized-duplicate.mjs",
+    "check:uncat-position": "node scripts/check-uncategorized-position.mjs",
+    "check:md-ui-sync": "node scripts/check-md-ui-sync.mjs",
+    "check:move-invariance": "node scripts/check-move-invariance.mjs",
+    "check:marker-tail": "node scripts/check-marker-tail.mjs",
+    "check:picker-timeout": "node scripts/check-picker-timeout.mjs",
+    "check:conflict-default": "node scripts/check-conflict-default.mjs",
+    "check:assert-in-data-dir": "node scripts/check-assert-in-data-dir.mjs",
+    "check:save-config": "node scripts/check-save-config-rollback.mjs",
+    "check:commit-active-edit": "node scripts/check-commit-active-edit.mjs",
+    "check:insert-position": "node scripts/check-insert-position.mjs",
+    "check:filter": "node scripts/check-filter.mjs",
+    "check:fade-stability": "node scripts/check-fade-in-stability.mjs",
+    "check:modal-animation": "node scripts/check-modal-close-animation.mjs",
+    "check:ime-guard": "node scripts/check-ime-guard.mjs",
+    "check:cjk-autospace": "node scripts/check-cjk-autospace.mjs",
+    "check:click-after-drag": "node scripts/check-click-after-drag.mjs",
+    "check:second-pass-audit": "node scripts/check-second-pass-audit.mjs",
+    "check:third-pass-audit": "node scripts/check-third-pass-audit.mjs",
+    "check:extra": "node scripts/check-completed-consolidate.mjs && node scripts/check-menu-fontsize.mjs",
+    "check:order": "node scripts/smoke-order-and-edge.mjs",
+    "check:parity": "node scripts/smoke-ui-parity.mjs",
+    "verify:ui": "node scripts/verify-batch-move-menu.mjs",
+    "verify:batch-special": "node scripts/verify-batch-trash-completed.mjs",
+    "verify:reload": "node scripts/verify-reload-ui.mjs",
+    "verify:e2e": "node scripts/verify-todo-end-to-end.mjs",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "todo",
+    "markdown",
+    "electron",
+    "desktop"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "playwright-core": "^1.62.1"
+  },
+  "build": {
+    "appId": "com.todolist.app",
+    "productName": "Todo List",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "src/**/*",
+      "icon.ico"
+    ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Office"
+    }
+  }
+}

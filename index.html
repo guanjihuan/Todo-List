@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body data-theme="dark" data-color-style="indigo">
+  <div id="app">
+    <!-- 顶部工具栏：Logo + 搜索 + 主题 + 设置 -->
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <h1 class="app-title">
+          <span class="logo" aria-hidden="true">
+            <img src="icon.ico" alt="" draggable="false" width="24" height="24">
+          </span>
+          <span class="title-text">Todo List</span>
+        </h1>
+      </div>
+
+      <div class="toolbar-center">
+        <div class="search-wrapper">
+          <span class="search-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6.5" cy="6.5" r="4.5"/>
+              <line x1="10" y1="10" x2="14" y2="14"/>
+            </svg>
+          </span>
+          <input type="search" id="search-input" placeholder="搜索任务…" class="search-input" autocomplete="off" spellcheck="false">
+          <kbd class="search-shortcut" id="search-shortcut" aria-hidden="true">Ctrl+F</kbd>
+          <button class="search-clear" id="search-clear" title="清空搜索" hidden aria-label="清空搜索">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <button id="btn-always-on-top" class="btn btn-icon" title="始终置顶" aria-label="始终置顶" aria-pressed="false">
+          <!-- Lucide pin：24×24 viewBox，stroke-width 2.2 在 12px 渲染尺寸下约为 1px 描边，
+               与右侧齿轮/窗口控制按钮的线条风格统一 -->
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="17" x2="12" y2="22"/>
+            <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>
+          </svg>
+        </button>
+        <button id="btn-theme" class="btn btn-icon" title="切换主题" aria-label="切换主题">
+          <span id="theme-icon"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        </button>
+        <button id="btn-settings" class="btn btn-icon" title="设置 (Ctrl+,)" aria-label="设置">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+
+        <!-- 自定义窗口控制按钮：frame: false 后接管系统标题栏 -->
+        <!-- 整组设 no-drag，按钮可点；外面 .toolbar 仍是 drag -->
+        <div class="window-controls" role="group" aria-label="窗口控制">
+          <button id="btn-minimize" class="btn btn-window-control" title="最小化" aria-label="最小化">
+            <svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+              <line x1="2.5" y1="6" x2="9.5" y2="6"/>
+            </svg>
+          </button>
+          <button id="btn-maximize" class="btn btn-window-control" data-state="maximize" title="最大化" aria-label="最大化">
+            <svg class="icon-maximize" viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2.5" y="2.5" width="7" height="7" rx="0.6"/>
+            </svg>
+            <svg class="icon-restore" viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3.8" y="3.8" width="6.2" height="6.2" rx="0.5"/>
+              <path d="M5.8 3.8 V2.2 H10 V6.5 H8.4"/>
+            </svg>
+          </button>
+          <button id="btn-close" class="btn btn-window-control btn-close" title="关闭" aria-label="关闭">
+            <svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+              <line x1="3.5" y1="3.5" x2="8.5" y2="8.5"/>
+              <line x1="8.5" y1="3.5" x2="3.5" y2="8.5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体两栏布局：侧边栏 + 任务区 -->
+    <main class="layout" id="layout">
+      <!-- 侧边栏：分类列表 -->
+      <aside class="sidebar" id="sidebar">
+        <nav class="category-list" id="category-list" role="navigation" aria-label="任务分类列表">
+          <!-- 动态填充（含「+ 新建子分类」按钮，渲染在最后一个子分类之后） -->
+        </nav>
+      </aside>
+
+      <!-- 中间：任务列表 -->
+      <section class="task-panel" id="task-panel">
+        <div class="task-header">
+          <div class="task-header-main">
+            <h2 class="task-category-title" id="category-title">当前任务</h2>
+            <span class="task-progress-text" id="task-progress-text">0 项</span>
+          </div>
+          <div class="task-header-actions">
+            <button id="btn-batch" class="filter-chip-btn" title="批量操作" aria-label="批量操作" aria-pressed="false" hidden>
+              <span id="batch-chip" class="filter-chip batch-chip">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="3"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span class="chip-text">批量</span>
+              </span>
+            </button>
+            <button id="btn-import" class="filter-chip-btn" title="从文本批量导入任务" aria-label="批量导入" hidden>
+              <span class="filter-chip import-chip">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span class="chip-text">导入</span>
+              </span>
+            </button>
+            <button id="btn-filter" class="filter-chip-btn" title="过滤任务 (F)" aria-label="过滤任务">
+              <span id="filter-chip" class="filter-chip" data-filter="all">
+                <span class="chip-icon"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M7 12h10M10 18h4"/></svg></span>
+                <span class="chip-text">全部</span>
+              </span>
+            </button>
+            <button id="btn-sort" class="filter-chip-btn sort-chip-btn" title="排序方式" aria-label="排序方式">
+              <span id="sort-chip" class="filter-chip sort-chip">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m3 16 4 4 4-4"/>
+                  <path d="M7 20V4"/>
+                  <path d="m21 8-4-4-4 4"/>
+                  <path d="M17 4v16"/>
+                </svg>
+                <span class="chip-text">手动</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <ul class="task-list" id="task-list" role="list" aria-label="任务列表">
+          <!-- 动态填充 -->
+        </ul>
+
+        <div class="empty-state" id="empty-state" hidden>
+          <!-- 动态填充 -->
+        </div>
+
+        <div class="task-input-wrapper">
+          <input type="text"
+                 id="task-input"
+                 class="task-input"
+                 placeholder="添加新任务（Enter 确认）"
+                 autocomplete="off">
+          <button id="btn-submit-task" class="task-submit-btn" type="button" title="添加任务" aria-label="添加任务">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 底部状态栏 -->
+    <footer class="statusbar" role="contentinfo">
+      <button class="file-path-chip" id="file-info" aria-label="当前文件路径，点击打开数据文件夹" title="">
+        <span class="file-path-hint" id="file-path-hint" aria-hidden="true">数据路径：</span>
+        <span class="file-path-text" id="file-path-text">未关联文件</span>
+      </button>
+      <span class="status-spacer"></span>
+      <div class="statusbar-right">
+        <span id="watch-indicator" class="watch-indicator" title="监听中（fs.watch + 250ms 轮询）" aria-label="文件监视状态"></span>
+        <span id="status-text" class="status-text"></span>
+        <span id="status-meta" class="status-meta"></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 右键菜单容器：菜单项由 feedback.js 的 showContextMenu 动态生成 -->
+  <div id="context-menu" class="context-menu" hidden></div>
+
+  <!-- 侧边栏分类右键菜单（重命名 / 删除） -->
+  <div id="category-context-menu" class="context-menu" hidden></div>
+
+  <!-- Toast 通知 -->
+  <div id="toast-container" class="toast-container" role="region" aria-live="polite"></div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
